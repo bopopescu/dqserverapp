@@ -47,7 +47,7 @@ cd "$SPARKJOBSERVER_DIR"
 
 echo "Building Spark Job Server ........."
 
-# sbt ++$SCALA_VERSION job-server-extras/assembly
+sbt ++$SCALA_VERSION job-server-extras/assembly
 if [ "$?" != "0" ]; then
   echo "Assembly failed for Spark Job Server"
   exit 1
@@ -55,7 +55,7 @@ fi
 
 echo "Publishing local Spark Job Server ........."
 
-# sbt ++$SCALA_VERSION publishLocal
+sbt ++$SCALA_VERSION publishLocal
 if [ "$?" != "0" ]; then
   echo "Publish Local failed for Spark Job Server"
   exit 1
