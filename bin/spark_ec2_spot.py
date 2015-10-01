@@ -702,10 +702,14 @@ def get_existing_cluster(conn, opts, cluster_name, die_on_error=True):
 def config_master(master_nodes):
     master = master_nodes[0].public_dns_name
     spark_master = "spark://"+master+":7077"
+    hdfs_base = "hdfs://"+master+":9000/user/root/"
     os.system("cp /sar/dqserver/local.conf /sar/dqserver/local.template ")
-    cmd = 'awk -F"=" \'/master/{$2="= \\"%s\\" ";print;next}1\' /sar/dqserver/local.template> /sar/dqserver/local.conf' % spark_master
-    print "Updating local conf with %s...." %cmd
-    os.system(cmd)
+    scmd = 'awk -F"=" \'/master/{$2="= \\"%s\\" ";print;next}1\' /sar/dqserver/local.template> /sar/dqserver/local.conf' %spark_master 
+    print "Updating local conf with %s...." %scmd
+    os.system(scmd)
+    hcmd = 'awk -F" : " \'/baselocation/{$2=" : \\"%s\\" ";print;next}1\' /sar/dqserver/local.conf> /sar/dqserver/local.$$.conf && mv -f /sar/dqserver/local.$$.conf /sar/dqserver/local.conf' %hdfs_base
+    print "Updating local conf with %s...." %hcmd
+    os.system(hcmd)
 
 # Deploy configuration files and run setup scripts on a newly launched
 # or started EC2 cluster.
